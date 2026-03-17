@@ -14,3 +14,15 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+cd android
+./gradlew clean
+cd ..
+flutter clean
+rm -rf ~/.gradle/caches/
+flutter pub get
+flutter gen-l10n
+flutter run
+
+After making changes, always clear the corrupted cache:
+rm -rf ~/.gradle/caches/
