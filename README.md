@@ -61,6 +61,49 @@ flutter build ios --flavor dev -t lib/main_dev.dart
 flutter build ios --flavor sit -t lib/main_sit.dart
 ```
 
+## NFC & EMV Card Reading
+
+This app supports NFC tag reading and EMV credit/debit card scanning:
+
+### Features
+
+- **NFC Tag Reading**: Read standard NFC tags and NDEF data
+- **EMV Card Support**: Read credit/debit card information including:
+  - Card number (PAN) - masked for security
+  - Cardholder name
+  - Expiry date
+  - Card type detection (Visa, Mastercard, Amex, Discover)
+
+### Supported Card Types
+
+- Visa
+- Mastercard
+- American Express
+- Discover
+
+### Usage
+
+1. Navigate to the scanning page
+2. Bring NFC tag or EMV card close to device
+3. App will automatically detect and read card information
+4. Card details are displayed on the payment result screen
+
+### Security Note
+
+Card numbers are automatically masked (showing only last 4 digits) for security purposes.
+
+### Troubleshooting EMV Card Detection
+
+If your EMV card is not being detected:
+
+1. **Check NFC Settings**: Ensure NFC is enabled on your device
+2. **Card Compatibility**: Not all EMV cards support contactless reading
+3. **Card Position**: Try different positions and orientations of the card
+4. **Debug Information**: Check device logs for detailed tag information
+5. **Card Type**: Some older cards may not support the required EMV applications
+
+The app will automatically detect and read from Visa, Mastercard, American Express, and Discover cards.
+
 ## Configuration
 
 Environment-specific URLs are configured in `lib/config.dart`. Update the `baseUrl` for each environment as needed.

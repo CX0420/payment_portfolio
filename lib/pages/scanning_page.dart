@@ -14,6 +14,7 @@ class _ScanningState extends State<Scanning> {
   String _status = '准备扫描 NFC 卡片...';
   bool _isNavigating = false;
   bool success = false;
+  Map<String, dynamic>? _cardData;
 
   @override
   void initState() {
@@ -23,33 +24,68 @@ class _ScanningState extends State<Scanning> {
 
   Future<void> _startProcess() async {
     // 开始扫描
-    _scanNFCTag();
+    await _scanCard();
 
-    // 等待 5 秒后自动跳转
-    await Future.delayed(const Duration(seconds: 5));
+    // 如果失败，等待 10 秒后自动跳转
+    if (!success) {
+      await Future.delayed(const Duration(seconds: 10));
+    }
 
     if (!_isNavigating && mounted) {
       _navigateToResultPage();
     }
   }
 
-  Future<void> _scanNFCTag() async {
+  Future<void> _scanCard() async {
     try {
+      // First try to read as EMV card
+      final emvData = await _nfcService.readEMVCard();
+      if (emvData != null && emvData.isNotEmpty) {
+        if (!mounted) return;
+
+        setState(() {
+          _status = 'EMV 卡片扫描成功！正在跳转...';
+          _cardData = emvData;
+          success = true;
+        });
+
+        // 等待 5 秒后跳转
+        await Future.delayed(const Duration(seconds: 5));
+
+        if (mounted) _navigateToResultPage();
+        return;
+      }
+
+      // If not EMV or EMV reading failed, try regular NFC tag reading
       final result = await _nfcService.readNFCTag();
       if (!mounted) return;
 
       setState(() {
-        _status = '扫描成功！正在跳转...';
-        success = true; // 假设扫描成功
+        _status = 'NFC 标签扫描成功！正在跳转...';
+        success = true;
+        _cardData = {'tagData': result};
       });
 
-      // 保存结果到共享参数（如果需要）
-      // 例如使用 SharedPreferences
+      // 等待 5 秒后跳转
+      await Future.delayed(const Duration(seconds: 5));
+
+      if (mounted) _navigateToResultPage();
     } catch (e) {
       if (!mounted) return;
 
+      // Show more detailed error message
+      String errorMessage = '扫描失败';
+      if (e.toString().contains('NFC is not available')) {
+        errorMessage = 'NFC 不可用，请检查设备设置';
+      } else if (e.toString().contains('Not an EMV card')) {
+        errorMessage = '未检测到 EMV 卡片，请重试';
+      } else {
+        errorMessage = '扫描失败: ${e.toString()}';
+      }
+
       setState(() {
-        _status = '扫描失败，10秒后自动跳转...';
+        _status = '$errorMessage，10秒后自动跳转...';
+        success = false;
       });
     }
   }
@@ -59,7 +95,10 @@ class _ScanningState extends State<Scanning> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PaymentResult(success: success)));
+            builder: (context) => PaymentResult(
+                  success: success,
+                  cardData: _cardData,
+                )));
   }
 
   @override
