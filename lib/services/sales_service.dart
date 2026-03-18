@@ -1,13 +1,23 @@
 // lib/services/sales_service.dart
 import '../models/sale_model.dart';
+import '../config.dart'; // Import config to use environment-specific URLs
 
 class SalesService {
   static final SalesService _instance = SalesService._internal();
   factory SalesService() => _instance;
   SalesService._internal();
 
+  // Example of using config for API calls
+  // final String apiUrl = Config.apiUrl;
+
   // Simulate API call - replace with actual API calls
   Future<List<SaleModel>> getSalesHistory() async {
+    // Example API call:
+    // final response = await http.get(Uri.parse('$apiUrl/sales'));
+    // return (json.decode(response.body) as List)
+    //     .map((data) => SaleModel.fromJson(data))
+    //     .toList();
+
     // Simulate network delay
     await Future.delayed(Duration(seconds: 1));
 

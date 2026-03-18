@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:payment_portfolio/pages/failed_page.dart';
-import 'package:payment_portfolio/pages/success_page.dart';
+import 'package:payment_portfolio/pages/scanning_page.dart';
+import 'package:payment_portfolio/pages/payment_result_page.dart';
 
 class Amount extends StatefulWidget {
   final String paymentType;
@@ -51,13 +51,9 @@ class _AmountState extends State<Amount> {
                             'Processing $amount for ${widget.paymentType}')),
                   );
                 }
-                if (amount == '100') {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Success()));
-                } else {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Failed()));
-                }
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Scanning()));
               },
               child: const Text('Proceed'),
             ),

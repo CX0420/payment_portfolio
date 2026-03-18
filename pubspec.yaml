@@ -38,6 +38,7 @@ dependencies:
   hive: ^2.2.3
   provider: ^6.1.1
   path_provider: ^2.1.4
+  flutter_nfc_kit: ^3.5.0
 
   #translation
   flutter_localization: ^0.1.14

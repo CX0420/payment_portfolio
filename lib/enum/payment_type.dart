@@ -1,8 +1,4 @@
-enum PaymentType {
-  cardPayment,
-  mpmQrPayment,
-  cpmQrPayment,
-}
+enum PaymentType { cardPayment, mpmQrPayment, cpmQrPayment }
 
 extension PaymentTypeExtension on PaymentType {
   String get displayName {
